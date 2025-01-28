@@ -1,5 +1,7 @@
 #include "../header.hpp"
 
+int knot_num;
+
 int main(void){
     int i, j;
     int n;
@@ -21,7 +23,9 @@ int main(void){
     kn.simplify_knot();
     kn.print();
 
-    kn.calc_jones_poly();
+    knot_num = 0;
+
+    kn.calc_jones_poly(0);
 
     cout << "Jones Polynomial:" << endl;
     cout << "digmin: " << kn.jones_poly.digmin << endl;

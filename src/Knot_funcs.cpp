@@ -194,87 +194,71 @@ void KNOT::Knot::simplify_knot(void){
     count_loop();
 }
 
-void KNOT::Knot::calc_jones_poly(void){
+bool KNOT::Knot::calc_jones_poly(int depth){
     int i;
-    //simplify_knot();
+    simplify_knot();
     if (itsc_n == 0){
         Polynomial r = {-1, 1, vector<int>{-1, 0, -1}};
         jones_poly = {0, 0, vector<int>{1}};
         rep0(i, simple_loop_num - 1){
             jones_poly = jones_poly * r;
         }
-        return;
+        return true;
     }
-    Knot lzero = (*this);
-    if (lzero.itsc[0].ch[0].partner_itsc_id == 0 && lzero.itsc[0].ch[3].partner_itsc_id == 0){
-        simple_loop_num++;
-    }else{
-        lzero.connect(lzero.itsc[0].ch[0], lzero.itsc[0].ch[3]);
-    }
-    if (lzero.itsc[0].ch[1].partner_itsc_id == 0 && lzero.itsc[0].ch[2].partner_itsc_id == 0){
-        simple_loop_num++;
-    }else{
-        lzero.connect(lzero.itsc[0].ch[1], lzero.itsc[0].ch[2]);
-    }
-    lzero.itsc[0].type = 2;
-    lzero.simplify_knot();
-    lzero.print();
-    lzero.calc_jones_poly();
-    /*
-    cout << "Jones Polynomial:" << endl;
-    cout << "digmin: " << lzero.jones_poly.digmin << endl;
-    cout << "digmax: " << lzero.jones_poly.digmax << endl;
-    cout << "{ ";
-    for (int coef: lzero.jones_poly.coef){
-        cout << coef << " ";
-    }
-    cout << "}" << endl;
-    cout << endl;
-    */
-    if (itsc[0].type == 1){
-        Knot lminus;
-        lminus = (*this);
-        lminus.itsc[0].type = -1;
-        lminus.simplify_knot();
-        lminus.print();
-        lminus.calc_jones_poly();
-        /*
-        cout << "Jones Polynomial:" << endl;
-        cout << "digmin: " << lminus.jones_poly.digmin << endl;
-        cout << "digmax: " << lminus.jones_poly.digmax << endl;
-        cout << "{ ";
-        for (int coef: lminus.jones_poly.coef){
-            cout << coef << " ";
+    int inv_itsc = 0;
+    while (inv_itsc < itsc_n){
+        KNOT::Knot a, b;
+        a = (*this);
+        b = (*this);
+        // a: L0
+        a.itsc[inv_itsc].type = 2;
+        if (a.itsc[inv_itsc].ch[0].partner_itsc_id == inv_itsc && a.itsc[inv_itsc].ch[3].partner_itsc_id == inv_itsc
+            && a.itsc[inv_itsc].ch[0].partner_ch == 3 && a.itsc[inv_itsc].ch[3].partner_ch == 0){
+            simple_loop_num++;
+        }else{
+            a.connect(a.itsc[inv_itsc].ch[0], a.itsc[inv_itsc].ch[3]);
         }
-        cout << "}" << endl;
-        cout << endl;
-        */
-        Polynomial a = {1, 3, vector<int>{-1, 0, 1}};
-        Polynomial b = {4, 4, vector<int>{1}};
-        jones_poly = a * lzero.jones_poly + b * lminus.jones_poly;
-    }else
-    if (itsc[0].type == -1){
-        Knot lplus;
-        lplus = (*this);
-        lplus.itsc[0].type = 1;
-        lplus.simplify_knot();
-        lplus.print();
-        lplus.calc_jones_poly();
-        /*
-        cout << "Jones Polynomial:" << endl;
-        cout << "digmin: " << lplus.jones_poly.digmin << endl;
-        cout << "digmax: " << lplus.jones_poly.digmax << endl;
-        cout << "{ ";
-        for (int coef: lplus.jones_poly.coef){
-            cout << coef << " ";
+        if (a.itsc[inv_itsc].ch[1].partner_itsc_id == inv_itsc && a.itsc[inv_itsc].ch[2].partner_itsc_id == inv_itsc
+            && a.itsc[inv_itsc].ch[1].partner_ch == 2 && a.itsc[inv_itsc].ch[2].partner_ch == 1){
+            simple_loop_num++; 
+        }else{
+            a.connect(a.itsc[inv_itsc].ch[1], a.itsc[inv_itsc].ch[2]);
         }
-        cout << "}" << endl;
-        cout << endl;
-        */
-        Polynomial a = {-3, -1, vector<int>{1, 0, -1}};
-        Polynomial b = {-4, -4, vector<int>{1}};
-        jones_poly = a * lzero.jones_poly + b * lplus.jones_poly;
+        // b: L+/L-
+        b.itsc[inv_itsc].type *= -1;
+        // simplify a and b
+        a.simplify_knot();
+        b.simplify_knot();
+        if (a.itsc_n < itsc_n && b.itsc_n < itsc_n){
+            knot_num++;
+            cout << "knot_num: " << knot_num << endl;
+            cout << "depth: " << depth + 1 << endl;
+            a.print();
+            if (a.calc_jones_poly(depth + 1) == false){
+                return false;
+            }
+            knot_num++;
+            cout << "knot_num: " << knot_num << endl;
+            cout << "depth: " << depth + 1 << endl;
+            b.print();
+            if (b.calc_jones_poly(depth + 1) == false){
+                return false;
+            }
+            // calculate Jones polynomial
+            if (itsc[inv_itsc].type == 1){
+                Polynomial c = {1, 3, vector<int>{-1, 0, 1}};
+                Polynomial d = {4, 4, vector<int>{1}};
+                jones_poly = a.jones_poly * c + b.jones_poly * d;
+            }else{
+                Polynomial c = {-3, -1, vector<int>{1, 0, -1}};
+                Polynomial d = {-4, -4, vector<int>{1}};
+                jones_poly = a.jones_poly * c + b.jones_poly * d;
+            }
+            return true;
+        }
+        inv_itsc++;
     }
+    return false;
 }
 
 void KNOT::Knot::print(void){

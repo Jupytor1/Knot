@@ -18,34 +18,25 @@
 #include <random>
 #include <climits>
 #include <bitset>
-//#include <bit>
-//#include <tuple>
-//#include <atcoder/modint>
 
 #define flush fflush(stdout)
 #define endl '\n'
-#define all(v) v.begin(), v.end()
 using namespace std;
-//using namespace atcoder;
 typedef long long ll;
 typedef unsigned long long ull;
 typedef pair<int, int> P;
 typedef pair<ll, ll> Pl;
-const int mod1 = (int)1e9 + 7, mod2 = (int)998244353;
 const int INF = 1e9 + 1e6;
 const ll LINF = 1e18 + 1e9;
-//const int INF = INT32_MAX - 100;
-//const ll LINF = LLONG_MAX - 100;
-const int di[9] = {1, 0, -1, 0, 1, 1, -1, -1, 0}, dj[9] = {0, 1, 0, -1, -1, 1, -1, 1, 0};
 
 #define rep0(i, n) for (i = 0; i < n; i++)
 #define rep1(i, a, b) for (i = a; i < b; i++)
 #define reprev(i, n) for (i = n - 1; i >= 0; i--)
 
-#define cumsum(v, l, r) (l <= 0)? v[r - 1] : (v[r - 1] - v[l - 1])
-
 #define lnprint(b) if (b){cout << endl;}else{cout << ' ';}
 
+
+extern int knot_num;
 
 namespace KNOT{
 
@@ -96,7 +87,7 @@ class Knot{
 
     void simplify_knot(void);
 
-    void calc_jones_poly(void);
+    bool calc_jones_poly(int depth);
 
     void print(void);
 
