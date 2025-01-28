@@ -3,11 +3,16 @@
 // Function for generating input for calculating Jones polynomial of 
 // roundly connected N rubberband
 
-int main(void){
+int main(int argc, char *argv[]){
     int i, j;
     int n;
 
-    cin >> n;
+    if (argc != 2){
+        cout << "Usage: ./rb_in_gen.exe N" << endl;
+        return 0;
+    }
+
+    n = atoi(argv[1]);
 
     cout << n * 6 << endl;
     rep0(i, n){
