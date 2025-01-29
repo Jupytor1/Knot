@@ -19,8 +19,8 @@ src/Knot_funcs.o					: header.hpp src/Knot_funcs.cpp
 src/Polynomial_funcs.o				: header.hpp src/Polynomial_funcs.cpp
 	g++ -c src/Polynomial_funcs.cpp -o src/Polynomial_funcs.o
 
-rb_in_gen.exe						: header.hpp src/rubberband_input_generator.cpp ${OBJS}
-	g++ src/rubberband_input_generator.cpp ${OBJS} -o rb_in_gen.exe
+rb_in_gen.exe						: header.hpp src/rubberband_input_generator.cpp
+	g++ src/rubberband_input_generator.cpp -o rb_in_gen.exe
 
 clean		:
 	rm -f src/*.o
