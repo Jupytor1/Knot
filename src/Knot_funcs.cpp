@@ -194,6 +194,7 @@ void KNOT::Knot::simplify_knot(void){
     count_loop();
 }
 
+/*
 bool KNOT::Knot::calc_jones_poly(int depth){
     int i;
     simplify_knot();
@@ -260,8 +261,25 @@ bool KNOT::Knot::calc_jones_poly(int depth){
     }
     return false;
 }
+*/
 
-void KNOT::Knot::print(void){
+void KNOT::Knot::read_connection(std::istream &fin){
+    int i, j;
+    fin >> itsc_n;
+    fin >> simple_loop_num;
+    init(itsc_n, simple_loop_num);
+    rep0(i, itsc_n){
+        fin >> itsc[i].type;
+        rep0(j, 4){
+            int partner, ch;
+            fin >> partner >> ch;
+            itsc[i].ch[j].partner_itsc_id = partner;
+            itsc[i].ch[j].partner_ch = ch;
+        }
+    }
+}
+
+void KNOT::Knot::print_attr(void){
     int i, j;
     cout << "simple loop num: " << simple_loop_num << endl;
     cout << "loop num: " << loop_num << endl;
@@ -274,4 +292,17 @@ void KNOT::Knot::print(void){
         cout << endl;
     }
     cout << endl;
+}
+
+void KNOT::Knot::print_connection(std::ostream &fout){
+    int i, j;
+    fout << itsc_n << endl;
+    fout << simple_loop_num << endl;
+    rep0(i, itsc_n){
+        fout << itsc[i].type;
+        rep0(j, 4){
+            fout << ' ' << itsc[i].ch[j].partner_itsc_id << ' ' << itsc[i].ch[j].partner_ch;
+        }
+        fout << endl;
+    }
 }
