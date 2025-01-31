@@ -9,14 +9,18 @@ int main(int argc, char *argv[]){
     ll step;
     KNOT::TreeNode *root;
     KNOT::TreeNode *cur_node;
-    KNOT::load_state(&root, &cur_node, argv[1]);
-    step = 0;
+    KNOT::load_state(&root, &step, &cur_node, argv[1]);
     while (root->calc_done == false){
         KNOT::calcJP_1step_forward(&cur_node);
+        cout << "step: " << step << endl;
+        if (cur_node != nullptr){
+            cur_node->knot.print_attr();
+            cout << endl;
+        }
         step++;
-        if (step % 10000000 == 0){
+        if (step % 3000000 == 0){
             string filename = KNOT::getLogFilename();
-            KNOT::save_state(root, cur_node, "log/" + filename);
+            KNOT::save_state(root, step, cur_node, "log/" + filename);
         }
     }
 
