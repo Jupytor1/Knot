@@ -17,8 +17,9 @@ void KNOT::Polynomial::trim_zero(void){
         newcoef.push_back(coef[i]);
         i++;
     }
-    digmin = l + digmin;
-    digmax = r + digmin;
+    int old_digmin = digmin;
+    digmin = l + old_digmin;
+    digmax = r + old_digmin;
     coef = newcoef;
 }
 
