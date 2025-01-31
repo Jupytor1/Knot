@@ -89,8 +89,6 @@ class Knot{
 
     void simplify_knot(void);
 
-    //bool calc_jones_poly(int depth);
-
     void read_connection(std::istream &fin);
 
     void print_attr(void);
@@ -110,8 +108,6 @@ class TreeNode{
 
     TreeNode(void);
 
-    //bool calc_jones_poly(int depth);
-
     ~TreeNode(void);
 
 };
@@ -125,9 +121,9 @@ void reset_temp_id(TreeNode *node);
 
 void assign_temp_id(TreeNode *root, vector<TreeNode*> *nodes);
 
-bool save_state(TreeNode *root, TreeNode *cur_node, string filename);
+bool save_state(TreeNode *root, ll step, TreeNode *cur_node, string filename);
 
-bool load_state(TreeNode **root, TreeNode **cur_node, string filename);
+bool load_state(TreeNode **root, ll *step, TreeNode **cur_node, string filename);
 
 string getLogFilename(void);
 

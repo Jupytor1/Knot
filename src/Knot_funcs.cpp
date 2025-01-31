@@ -69,7 +69,7 @@ void KNOT::Knot::connect(Channel in_ch, Channel out_ch){
 void KNOT::Knot::simplify_knot(void){
     int i, j;
     // deactivate unnecessary intersections
-    // that is, changing the type of an intersection into 2
+    // i.e. change the type of an intersection into 2
     bool finished;
     finished = false;
     while (finished == false){
@@ -193,75 +193,6 @@ void KNOT::Knot::simplify_knot(void){
     itsc = new_itsc;
     count_loop();
 }
-
-/*
-bool KNOT::Knot::calc_jones_poly(int depth){
-    int i;
-    simplify_knot();
-    if (itsc_n == 0){
-        Polynomial r = {-1, 1, vector<int>{-1, 0, -1}};
-        jones_poly = {0, 0, vector<int>{1}};
-        rep0(i, simple_loop_num - 1){
-            jones_poly = jones_poly * r;
-        }
-        return true;
-    }
-    int inv_itsc = 0;
-    while (inv_itsc < itsc_n){
-        KNOT::Knot a, b;
-        a = (*this);
-        b = (*this);
-        // a: L0
-        a.itsc[inv_itsc].type = 2;
-        if (a.itsc[inv_itsc].ch[0].partner_itsc_id == inv_itsc && a.itsc[inv_itsc].ch[3].partner_itsc_id == inv_itsc
-            && a.itsc[inv_itsc].ch[0].partner_ch == 3 && a.itsc[inv_itsc].ch[3].partner_ch == 0){
-            simple_loop_num++;
-        }else{
-            a.connect(a.itsc[inv_itsc].ch[0], a.itsc[inv_itsc].ch[3]);
-        }
-        if (a.itsc[inv_itsc].ch[1].partner_itsc_id == inv_itsc && a.itsc[inv_itsc].ch[2].partner_itsc_id == inv_itsc
-            && a.itsc[inv_itsc].ch[1].partner_ch == 2 && a.itsc[inv_itsc].ch[2].partner_ch == 1){
-            simple_loop_num++; 
-        }else{
-            a.connect(a.itsc[inv_itsc].ch[1], a.itsc[inv_itsc].ch[2]);
-        }
-        // b: L+/L-
-        b.itsc[inv_itsc].type *= -1;
-        // simplify a and b
-        a.simplify_knot();
-        b.simplify_knot();
-        if (a.itsc_n < itsc_n && b.itsc_n < itsc_n){
-            knot_num++;
-            cout << "knot_num: " << knot_num << endl;
-            cout << "depth: " << depth + 1 << endl;
-            a.print();
-            if (a.calc_jones_poly(depth + 1) == false){
-                return false;
-            }
-            knot_num++;
-            cout << "knot_num: " << knot_num << endl;
-            cout << "depth: " << depth + 1 << endl;
-            b.print();
-            if (b.calc_jones_poly(depth + 1) == false){
-                return false;
-            }
-            // calculate Jones polynomial
-            if (itsc[inv_itsc].type == 1){
-                Polynomial c = {1, 3, vector<int>{-1, 0, 1}};
-                Polynomial d = {4, 4, vector<int>{1}};
-                jones_poly = a.jones_poly * c + b.jones_poly * d;
-            }else{
-                Polynomial c = {-3, -1, vector<int>{1, 0, -1}};
-                Polynomial d = {-4, -4, vector<int>{1}};
-                jones_poly = a.jones_poly * c + b.jones_poly * d;
-            }
-            return true;
-        }
-        inv_itsc++;
-    }
-    return false;
-}
-*/
 
 void KNOT::Knot::read_connection(std::istream &fin){
     int i, j;

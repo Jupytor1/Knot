@@ -1,6 +1,7 @@
 #include "../header.hpp"
 
 void KNOT::calcJP_1step_forward(TreeNode **node){
+    (*node)->knot.simplify_knot();
     if ((*node)->knot.itsc_n == 0){
         int i;
         Polynomial r = {-1, 1, vector<int>{-1, 0, -1}};
@@ -124,7 +125,7 @@ void KNOT::assign_temp_id(TreeNode *root, vector<TreeNode*> *nodes){
     }
 }
 
-bool KNOT::save_state(KNOT::TreeNode *root, KNOT::TreeNode *cur_node, string filename){
+bool KNOT::save_state(KNOT::TreeNode *root, ll step, KNOT::TreeNode *cur_node, string filename){
     std::ofstream fout(filename);
     if (!fout){
         cout << "File not opened." << endl;
@@ -134,6 +135,9 @@ bool KNOT::save_state(KNOT::TreeNode *root, KNOT::TreeNode *cur_node, string fil
     vector<TreeNode*> nodes;
     KNOT::assign_temp_id(root, &nodes);
     int node_num = nodes.size();
+    // write the step number
+    fout << step << endl;
+    fout << endl;
     // define the tree structure
     fout << node_num << endl;
     rep1(i, 1, node_num){
@@ -157,11 +161,12 @@ bool KNOT::save_state(KNOT::TreeNode *root, KNOT::TreeNode *cur_node, string fil
         }
         fout << endl;
     }
+    fout << "END" << endl;
     fout.close();
     return true;
 }
 
-bool KNOT::load_state(KNOT::TreeNode **root, KNOT::TreeNode **cur_node, string filename){
+bool KNOT::load_state(KNOT::TreeNode **root, ll *step, KNOT::TreeNode **cur_node, string filename){
     std::ifstream fin(filename);
     if (!fin){
         cout << "File not opened." << endl;
@@ -169,6 +174,7 @@ bool KNOT::load_state(KNOT::TreeNode **root, KNOT::TreeNode **cur_node, string f
     }
     int i;
     int node_num;
+    fin >> *step;
     fin >> node_num;
     vector<TreeNode*> nodes;
     rep0(i, node_num){
@@ -211,6 +217,13 @@ bool KNOT::load_state(KNOT::TreeNode **root, KNOT::TreeNode **cur_node, string f
                 nodes[node_id]->knot.jones_poly.coef.push_back(coef);
             }
         }
+    }
+    string end;
+    fin >> end;
+    if (end != "END"){
+        cout << "File format error." << endl;
+        fin.close();
+        return false;
     }
     fin.close();
     return true;
